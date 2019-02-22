@@ -25,7 +25,13 @@
     :schema/fields [{:db/ident :user/name
                      :db/valueType :db.type/string
                      :db/unique :db.unique/identity
+                     :db/cardinality :db.cardinality/one}
+                    {:db/ident :user/name
+                     :db/valueType :db.type/string
+                     :db/unique :db.unique/identity
                      :db/cardinality :db.cardinality/one}]}))
+
+
 
 (defn hello-world []
   [:div {:style {:fontSize "0.7em"}}
@@ -60,20 +66,22 @@
       [:th :db/valueType]
       [:th :db/doc]]]
     [:tbody
-     [:tr
-      [:td [:select {:name :db/cardinality}
-            [:option {:value ""} "-"]
-            [:option {:value :db.cardinality/one} :db.cardinality/one]
-            [:option {:value :db.cardinality/many} :db.cardinality/many]]]
-      [:td [:input {:name :db/ident}]] 
-      [:td [:select {:name :db/isComponent}
-            [:option {:value ""} "-"]
-            [:option {:value true} "true"]
-            [:option {:value false} "false"]]]
-      [:td :db/noHistory]
-      [:td :db/unique]
-      [:td :db/valueType]
-      [:td [:input {:name :db/doc} ]]]
+     (map (fn [v]
+            [:tr
+             [:td [:select {:name (:db/cardinality v)}
+                   [:option {:value ""} "-"]
+                   [:option {:value :db.cardinality/one} :db.cardinality/one]
+                   [:option {:value :db.cardinality/many} :db.cardinality/many]]]
+             [:td [:input {:name :db/ident}]] 
+             [:td [:select {:name :db/isComponent}
+                   [:option {:value ""} "-"]
+                   [:option {:value true} "true"]
+                   [:option {:value false} "false"]]]
+             [:td :db/noHistory]
+             [:td :db/unique]
+             [:td :db/valueType]
+             [:td [:input {:name :db/doc} ]]])
+          (:schema/fields @app-state))
      ]]
    [:p "Schema preview"]
    [:textarea]
